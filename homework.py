@@ -4,24 +4,24 @@ from dataclasses import dataclass
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    def __init__(self, training_type: str,
-                 duration: int,
-                 distance: int,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    INFO_MESSAGE = ('Тип тренировки: {training_type}; '
+                    'Длительность: {duration:.3f} ч.; '
+                    'Дистанция: {distance:.3f} км; '
+                    'Ср. скорость: {speed:.3f} км/ч; '
+                    'Потрачено ккал: {calories:.3f}.')
+    training_type: str
+    duration: int
+    distance: int
+    speed: float
+    calories: float
 
     def get_message(self) -> str:
         """Возвращение строки сообщения"""
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return self.INFO_MESSAGE.format(training_type=self.training_type,
+                                        duration=self.duration,
+                                        distance=self.distance,
+                                        speed=self.speed,
+                                        calories=self.calories)
 
 
 class Training:
@@ -109,8 +109,10 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    type_dict: [str, str] = {'SWM': Swimming, 'RUN': Running,
-                             'WLK': SportsWalking}
+    type_dict: dict[str, type[Training]] = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking}
     return type_dict[workout_type](*data)
 
 
